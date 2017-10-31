@@ -11,7 +11,8 @@ module.exports = function () {
     buildVerbosity: "minimal",
     buildPlatform: "Any CPU",
     publishPlatform: "AnyCpu",
-    runCleanBuilds: false
+    runCleanBuilds: false,
+	companyPrefix: "Sitecore"
   };
   return config;
 }

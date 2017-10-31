@@ -12,6 +12,7 @@ var yargs = require("yargs").argv;
 var unicorn = require("./scripts/unicorn.js");
 var habitat = require("./scripts/habitat.js");
 var helix = require("./scripts/helix.js");
+var express = require("./scripts/express/helix-express");
 
 var config;
 if (fs.existsSync('./gulp-config.js.user')) {
