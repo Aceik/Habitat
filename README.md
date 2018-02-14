@@ -7,5 +7,5 @@ The architecture and methodology focuses on:
 * Flexibility - *Change and add quickly and without worry*
 * Extensibility - *Simply add new features without steep learning curve*
 
-For getting started, please check out the [Habitat Wiki](../../wiki).  
+For getting started, please check out the [Documentation](./docs).  
 For more information on **Helix**, please go to [helix.sitecore.net](http://helix.sitecore.net).
