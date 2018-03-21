@@ -1,4 +1,6 @@
-﻿namespace Sitecore.Foundation.Assets.Services
+﻿using Sitecore.Data.Items;
+
+namespace Sitecore.Foundation.Assets.Services
 {
     using System;
     using System.Linq;
@@ -6,6 +8,7 @@
     using System.Web;
     using Sitecore.Foundation.Assets.Models;
     using Sitecore.Foundation.Assets.Repositories;
+    using Sitecore.Foundation.SitecoreExtensions.Extensions;
 
     /// <summary>
     ///     A service which helps add the required JavaScript at the end of a page, and CSS at the top of a page.
@@ -54,15 +57,16 @@
             return new HtmlString(sb.ToString());
         }
 
-        public HtmlString RenderStyles()
+        public HtmlString RenderStyles(bool async)
         {
             var sb = new StringBuilder();
+            string asyncVal = async.ToString().ToLower();
             foreach (var item in AssetRepository.Current.Items.Where(asset => asset.Type == AssetType.Css && this.IsForContextSite(asset)))
             {
                 switch (item.ContentType)
                 {
                     case AssetContentType.File:
-                        sb.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" />", item.Content).AppendLine();
+                        sb.AppendFormat($"<link href=\"{0}\" rel=\"stylesheet\" async=\"{asyncVal}\" />", item.Content).AppendLine();
                         break;
                     case AssetContentType.Inline:
                         sb.AppendLine("<style type=\"text/css\">");
@@ -93,6 +97,61 @@
                 }
             }
             return false;
+        }
+
+        public bool HasInlineStyles(HttpRequestBase request)
+        {
+            return AssetRepository.Current.Items.Any(asset => asset.Type == AssetType.Css && asset.ContentType == AssetContentType.Inline && this.IsForContextSite(asset));
+        }
+
+        public HtmlString RenderScriptAsyncBootup(ScriptLocation location, string jqueryLocation)
+        {
+            var sb = new StringBuilder();
+            var assets = AssetRepository.Current.Items.Where(
+                asset => (asset.Type == AssetType.JavaScript || asset.Type == AssetType.Raw)
+                         && asset.Location == location && this.IsForContextSite(asset));
+
+            sb.Append("<script data-cfasync=\"false\">\n var scriptsToLoad = [");
+            var assetsArray = assets as Asset[] ?? assets.ToArray();
+            for (int i = 0; i < assetsArray.Count(); i++)
+            {
+                var sciptUri = assetsArray[i].Content;
+                if (!string.IsNullOrWhiteSpace(sciptUri))
+                {
+                    sb.Append($"'{sciptUri.Replace("\r", string.Empty)}'");
+                    if (assetsArray.Any() && (i + 1) != assetsArray.Count())
+                    {
+                        sb.Append(",");
+                    }
+                }
+            }
+            sb.Append("]; \n</script>");
+            sb.AppendLine($"<script data-cfasync=\"false\" src=\"{jqueryLocation}\" async defer></script> ");
+            return new HtmlString(sb.ToString());
+        }
+
+        public static string GetPageKey(Item item)
+        {
+            string key = string.Empty;
+            if (item.Url() == "/" || item.Name == "Home")
+                key = "homepage";
+            else
+            {
+                key = item.Url().Replace("/", "_");
+            }
+            return key;
+        }
+
+        public static string GetPageKey(HttpRequestBase request)
+        {
+            string key = request.Url.PathAndQuery;
+            if (key == "/")
+                key = "homepage";
+            else
+            {
+                key = request.Url.PathAndQuery.Replace("/", "_");
+            }
+            return key;
         }
     }
 }

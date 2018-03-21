@@ -265,6 +265,10 @@
     <Content Include="styles\dayfrost\components\atoms\_button.scss" />
     <Content Include="styles\dayfrost\components\atoms\_well.scss" />
     <Content Include="styles\dayfrost\components\_atoms.scss" />
+    <Content Include="Views\Common\Assets\InlineStyles.cshtml" />
+    <Content Include="Views\Common\Assets\Scripts-3.2.1.cshtml" />
+    <Content Include="Views\Common\Assets\Styles.cshtml" />
+    <Content Include="Views\Common\Assets\StylesDeferred.cshtml" />
     <None Include="Views\Web.config" />
     <None Include="web.config" />
     <None Include="web.Debug.config">
@@ -275,6 +279,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\foundation\Assets\code\Sitecore.Foundation.Assets.csproj">
+      <Project>{7E46FF93-EE05-412C-AC47-2A59A13DA73C}</Project>
+      <Name>Sitecore.Foundation.Assets</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\foundation\SitecoreExtensions\code\Sitecore.Foundation.SitecoreExtensions.csproj">
       <Project>{b535703f-8d07-4f23-a533-2974bb4cc7b1}</Project>
       <Name>Sitecore.Foundation.SitecoreExtensions</Name>
@@ -284,7 +292,9 @@
       <Name>Sitecore.Foundation.Theming</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="assets\js\lib\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

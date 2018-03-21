@@ -1,0 +1,5 @@
+﻿@model Sitecore.Mvc.Presentation.RenderingModel
+@using Sitecore.Foundation.Assets.Services
+
+<!-- Inline Viewport CSS | above the fold -->
+@RenderAssetsService.Current.RenderInlineStyles(Request)

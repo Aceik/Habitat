@@ -5,7 +5,8 @@
 @using Sitecore.Mvc.Analytics.Extensions
 @inherits WebViewPage
 @{
-  Layout = null;
+    Layout = null;
+    string cacheKey = RenderAssetsService.GetPageKey(Request);
 }
 <!DOCTYPE html>
 <!--[if IE 9]><html lang="en" class="ie9 no-js"><![endif]-->
@@ -21,9 +22,10 @@
   {
     @Html.Sitecore().Placeholder("head")
   }
-  <!-- Latest compiled and minified JavaScript -->
-  @RenderAssetsService.Current.RenderScript(ScriptLocation.Head)
-  @RenderAssetsService.Current.RenderStyles()
+
+  @*Inline Styles Rendering*@
+  @Html.Sitecore().CachedRendering("{B14DA82E-F844-4945-8F31-4577A52861E1}", new RenderingCachingSettings { Cacheable = true, CacheKey = cacheKey + "_critical_styles" })
+
   @Html.Sitecore().VisitorIdentification()
 </head>
 <body class="header-static @(Sitecore.Context.PageMode.IsNormal ? "" : (Sitecore.Context.PageMode.IsExperienceEditor ? "pagemode-edit" : "pagemode-preview"))">
@@ -42,6 +44,12 @@
 
     @Html.Sitecore().Placeholder("page-sidebar")
   </div>
-  @RenderAssetsService.Current.RenderScript(ScriptLocation.Body)
+  
+    @*Styles Rendering Deferred Styles *@
+    @Html.Sitecore().CachedRendering("{F04C562A-CBF9-40CF-8CA9-8CE83FDF0BFA}", new RenderingCachingSettings { Cacheable = true, CacheKey = cacheKey + "_bottom_styles" })
+
+    @*Scripts Legacy Jquery jquery-3.2.1 *@
+    @Html.Sitecore().CachedRendering("{B0DD36CE-EE4A-4D01-9986-7BEF114196DD}", new RenderingCachingSettings { Cacheable = true, CacheKey = cacheKey + "_bottom_scripts" })
+
 </body>
 </html>
